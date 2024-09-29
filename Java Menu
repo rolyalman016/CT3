@@ -1,0 +1,94 @@
+
+package javafx.scene.paint;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+
+public class MenuExample {
+
+    public static void main(String[] args) {
+        // Create the main frame
+        JFrame frame = new JFrame("Java GUI Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        // Create the menu bar
+        JMenuBar menuBar = new JMenuBar();
+
+        // Create the menu
+        JMenu menu = new JMenu("Options");
+        menuBar.add(menu);
+
+        // Create text area
+        JTextArea textArea = new JTextArea();
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        // Create a scroll pane and add the text area to it
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(580, 300));
+
+        // Menu Item 1: Print Date and Time
+        JMenuItem menuItem1 = new JMenuItem("Print Date and Time");
+        menu.add(menuItem1);
+        menuItem1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                textArea.append("Current Date and Time: " + dtf.format(now) + "\n");
+            }
+        });
+
+        // Menu Item 2: Save to File
+        JMenuItem menuItem2 = new JMenuItem("Save to File");
+        menu.add(menuItem2);
+        menuItem2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try (FileWriter writer = new FileWriter("log.txt")) {
+                    writer.write(textArea.getText());
+                    JOptionPane.showMessageDialog(frame, "Text saved to log.txt successfully!");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(frame, "Error saving to file: " + ex.getMessage());
+                }
+            }
+        });
+
+        // Menu Item 3: Change Background Color
+        JMenuItem menuItem3 = new JMenuItem("Change Background Color");
+        menu.add(menuItem3);
+        menuItem3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Generate a random orange color
+                Random rand = new Random();
+                float hue = 30 + rand.nextFloat() * (45 - 30);  // Hue range for orange (30-45)
+                Color randomOrange = Color.getHSBColor(hue / 360, 0.9f, 1.0f);
+                textArea.setBackground(randomOrange);
+                JOptionPane.showMessageDialog(frame, "Changed to Orange Hue: " + Math.round(hue));
+            }
+        });
+
+        // Menu Item 4: Exit Program
+        JMenuItem menuItem4 = new JMenuItem("Exit");
+        menu.add(menuItem4);
+        menuItem4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set up the frame
+        frame.setJMenuBar(menuBar);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+}
